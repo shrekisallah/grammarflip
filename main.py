@@ -1,12 +1,11 @@
 import requests
-import pyperclip as pc
 import json
 import os
 from time import sleep
 
 
-def parse(data):
-    pre = data[0]
+def parse(data, thing):
+    pre = data[thing]
     q = pre['questions']
     a = 0
     for i in range(10):
@@ -25,20 +24,29 @@ def parse(data):
 
 
 def main():
+    with open("config.json", 'r+') as f:
+        text = f.read()
+        qwe = json.loads(text)
+        api = qwe["apikey"]
+    if api == '':
+        print('No apikey in config.json found')
+        exit(404)
     lid = input('Enter grammarflip url: ')
+    typ = input('Enter 1 for pre-test, 2 for PE1, etc: ')
+    int(typ)
+    typ -= 1
     pd = lid.split('/')
     url = f'https://api-curriculum.grammarflip.com/quiz/getall?lessonID={pd[-1]}'
     headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:93.0) Gecko/20100101 Firefox/93.0',
-               'Accept': 'application/json', 'apikey': 'put api key here'}
+               'Accept': 'application/json', 'apikey': f'{api}'}
     r = requests.get(url=url, headers=headers)
     if r.status_code == 200:
         print('Success!')
-        sleep(1)
+        sleep(0.5)
         # pc.copy(r.text)
         # print('Copied to clipboard')
-        print('Parsing pre-test...')
         sleep(1)
-        parse(r.json())
+        parse(r.json(), typ)
     else:
         print(f'Error: {r.status_code}')
 
