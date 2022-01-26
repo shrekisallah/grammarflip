@@ -1,7 +1,7 @@
-import requests
 import json
 import os
 from time import sleep
+import requests
 
 
 def parse(data, thing):
@@ -12,14 +12,25 @@ def parse(data, thing):
         temp = q[a]
         qa = temp['text']
         temp2 = qa.split('>')
-        qs = temp2[1].split('<')
+        if 'span style' in str(temp2):
+            qs = temp2[2].split('<')
+        else:
+            qs = temp2[1].split('<')
         an0 = temp['options'].split('*||*')
         if 'true' in an0[0]:
             an1 = json.loads(an0[0])
-        else:
+        elif 'true' in an0[1]:
             an1 = json.loads(an0[1])
+        elif 'true' in an0[2]:
+            an1 = json.loads(an0[2])
+        else:
+            an1 = json.loads(an0[3])
         ans = an1['option']
         print(f'Question: {qs[0]}\nAnswer: {ans}')
+        if qs[0] == '':
+            print(f'Something went wrong\nQuestion Data: {qs}')
+        if an1 == '':
+            print(f'Something went wrong\nAnswer Data: {an0}')
         a += 1
 
 
@@ -32,8 +43,7 @@ def main():
         print('No apikey in config.json found')
         exit(404)
     lid = input('Enter grammarflip url: ')
-    typ = input('Enter 1 for pre-test, 2 for PE1, etc: ')
-    int(typ)
+    typ = int(input('Enter 1 for pre-test, 2 for PE1, etc: '))
     typ -= 1
     pd = lid.split('/')
     url = f'https://api-curriculum.grammarflip.com/quiz/getall?lessonID={pd[-1]}'
@@ -45,7 +55,6 @@ def main():
         sleep(0.5)
         # pc.copy(r.text)
         # print('Copied to clipboard')
-        sleep(1)
         parse(r.json(), typ)
     else:
         print(f'Error: {r.status_code}')
