@@ -1,6 +1,7 @@
 import json
 import os
 from time import sleep
+
 import requests
 
 
@@ -10,12 +11,11 @@ def parse(data, thing):
     a = 0
     for i in range(10):
         temp = q[a]
-        qa = temp['text']
-        temp2 = qa.split('>')
-        if 'span style' in str(temp2):
-            qs = temp2[2].split('<')
+        qa = temp['text'].split('>')
+        if 'span style' in str(qa):
+            qs = qa[2].split('<')
         else:
-            qs = temp2[1].split('<')
+            qs = qa[1].split('<')
         an0 = temp['options'].split('*||*')
         if 'true' in an0[0]:
             an1 = json.loads(an0[0])
@@ -26,7 +26,7 @@ def parse(data, thing):
         else:
             an1 = json.loads(an0[3])
         ans = an1['option']
-        print(f'Question: {qs[0]}\nAnswer: {ans}')
+        print(f'\nQuestion: {qs[0]}\nAnswer: {ans}')
         if qs[0] == '':
             print(f'Something went wrong\nQuestion Data: {qs}')
         if an1 == '':
@@ -58,11 +58,12 @@ def main():
         parse(r.json(), typ)
     else:
         print(f'Error: {r.status_code}')
+    input('Press any key to exit...')
 
 
 if __name__ == '__main__':
     if os.name == 'nt':
-        os.system('title "Grammarflip Helper"')
+        os.system('title Grammarflip Helper')
     main()
 else:
     exit(69)
