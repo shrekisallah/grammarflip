@@ -1,3 +1,4 @@
+
 import json
 import os
 from time import sleep
@@ -8,9 +9,8 @@ import requests
 def parse(data, thing):
     pre = data[thing]
     q = pre['questions']
-    a = 0
     for i in range(10):
-        temp = q[a]
+        temp = q[i-1]
         qa = temp['text'].split('>')
         if 'span style' in str(qa):
             qs = qa[2].split('<')
@@ -31,7 +31,6 @@ def parse(data, thing):
             print(f'Something went wrong\nQuestion Data: {qs}')
         if an1 == '':
             print(f'Something went wrong\nAnswer Data: {an0}')
-        a += 1
 
 
 def main():
@@ -43,7 +42,11 @@ def main():
         print('No apikey in config.json found')
         exit(404)
     lid = input('Enter grammarflip url: ')
-    typ = int(input('Enter 1 for pre-test, 2 for PE1, etc: '))
+    try:
+        typ = int(input('Enter 1 for pre-test, 2 for PE1, etc: '))
+    except ValueError:
+        print("Enter a number this time.")
+        main()
     typ -= 1
     pd = lid.split('/')
     url = f'https://api-curriculum.grammarflip.com/quiz/getall?lessonID={pd[-1]}'
