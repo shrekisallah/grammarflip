@@ -13,3 +13,7 @@ Run main.py and paste lesson url
 2. Load grammarflip (https://app.grammarflip.com/courses)
 3. Click on a grammarflip network request and scroll down to request headers
 4. Find the apikey header and put that in config.json
+
+
+## Todo
+Sometimes the last answer appears first, will probably fix ~~soon~~ never
