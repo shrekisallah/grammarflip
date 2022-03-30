@@ -16,4 +16,4 @@ Run main.py and paste lesson url
 
 
 ## Todo
-Sometimes the last answer appears first, will probably fix ~~soon~~ never
+All problems fixed (hopefully)
