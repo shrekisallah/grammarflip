@@ -1,8 +1,7 @@
-
 import json
 import os
 from time import sleep
-
+from bs4 import BeautifulSoup
 import requests
 
 
@@ -11,11 +10,7 @@ def parse(data, thing):
     q = pre['questions']
     for i in range(10):
         temp = q[i-1]
-        qa = temp['text'].split('>')
-        if 'span style' in str(qa):
-            qs = qa[2].split('<')
-        else:
-            qs = qa[1].split('<')
+        qs = BeautifulSoup(temp['text'], 'html.parser').text
         an0 = temp['options'].split('*||*')
         if 'true' in an0[0]:
             an1 = json.loads(an0[0])
@@ -26,7 +21,7 @@ def parse(data, thing):
         else:
             an1 = json.loads(an0[3])
         ans = an1['option']
-        print(f'\nQuestion: {qs[0]}\nAnswer: {ans}')
+        print(f'\nQuestion: {qs}\nAnswer: {ans}')
         if qs[0] == '':
             print(f'Something went wrong\nQuestion Data: {qs}')
         if an1 == '':
